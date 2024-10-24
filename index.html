@@ -39,31 +39,32 @@
     <div class="gallery" id="gallery"></div>
 
     <script>
-        // Nombres de archivos conocidos en la carpeta 'static/uploads'
-        const imageNames = ['1.gif', 'lockscreen-2.jpg', 'fondo.jpg']; // Agrega más nombres si los conoces
+        // Ruta del archivo JSON que contiene la lista de imágenes
+        const jsonFilePath = '/uploads/uploads.json';
 
         const galleryElement = document.getElementById('gallery');
 
-        // Intentar cargar imágenes desde 'static/uploads'
-        imageNames.forEach(name => {
-            const imgSrc = `static/uploads/${name}`;
-            console.log(`Intentando cargar: ${imgSrc}`); // Mostrar la ruta de la imagen en la consola
-
-            const imgElement = document.createElement('img');
-            imgElement.src = imgSrc;
-            imgElement.alt = name;
-
-            // Verificar si la imagen se carga correctamente
-            imgElement.onload = () => {
-                console.log(`Cargada exitosamente: ${imgSrc}`);
-            };
-            imgElement.onerror = () => {
-                console.warn(`No se pudo cargar la imagen: ${imgSrc}`);
-                imgElement.remove(); // Eliminar la imagen si no se carga
-            };
-
-            galleryElement.appendChild(imgElement);
-        });
+        // Cargar la lista de imágenes desde el archivo JSON
+        fetch(jsonFilePath)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('No se pudo cargar el archivo JSON.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Iterar sobre la lista de imágenes en el JSON y mostrarlas
+                data.images.forEach(image => {
+                    const imgElement = document.createElement('img');
+                    imgElement.src = `/static/uploads/${image.file}`;
+                    imgElement.alt = image.file;
+                    galleryElement.appendChild(imgElement);
+                });
+            })
+            .catch(error => {
+                console.error('Error al cargar las imágenes:', error);
+                galleryElement.innerHTML = '<p>No se pudieron cargar las imágenes.</p>';
+            });
     </script>
 </body>
 </html>
