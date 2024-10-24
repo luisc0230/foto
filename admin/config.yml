@@ -14,10 +14,10 @@ collections:
       - { label: "File", name: "file", widget: "image" }
       - { label: "Description", name: "description", widget: "string" }
 
-  - name: "pages"
-    label: "Pages"
-    folder: "admin"
-    create: false
-    extension: "html"
+  - name: "gallery"
+    label: "Gallery JSON"
+    folder: "static/uploads"
+    extension: "json"
+    create: true
     fields:
-      - { label: "Content", name: "body", widget: "code", default_language: "html" }
+      - { label: "Images", name: "images", widget: "list", field: { label: "File", name: "file", widget: "image" } }

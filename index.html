@@ -3,52 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ver GIF</title>
+    <title>Galería de Imágenes</title>
     <style>
-        body, html {
+        body {
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            height: 100%;
-            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #f0f0f0;
         }
-        img {
-            width: 100%;
-            height: 100%;
+        h1 {
+            margin: 20px;
+        }
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+        .gallery img {
+            width: 200px;
+            height: 200px;
             object-fit: cover;
-        }
-        #login {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            padding: 10px 20px;
-            background-color: #333;
-            color: #fff;
-            cursor: pointer;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
     </style>
-    <!-- Cargar Netlify Identity Widget -->
-    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
-    <div id="login">Iniciar sesión</div>
-    <img src="/uploads/abogado.gif" alt="Mi GIF">
+    <h1>Galería de Imágenes</h1>
+    <div class="gallery" id="gallery"></div>
 
     <script>
-        // Inicializar Netlify Identity
-        if (window.netlifyIdentity) {
-            window.netlifyIdentity.on('init', user => {
-                if (!user) {
-                    window.netlifyIdentity.on('login', () => {
-                        document.location.href = '/admin/';
-                    });
-                }
-            });
-        }
+        // Cargar imágenes de la carpeta 'uploads'
+        const galleryElement = document.getElementById('gallery');
 
-        // Manejar el clic en el botón de inicio de sesión
-        document.getElementById('login').onclick = function() {
-            window.netlifyIdentity.open();
-        };
+        // Suponiendo que la lista de imágenes está en un archivo JSON generado por el CMS
+        fetch('/uploads/images.json') // Asegúrate de generar este archivo JSON en el CMS
+            .then(response => response.json())
+            .then(images => {
+                images.forEach(image => {
+                    const imgElement = document.createElement('img');
+                    imgElement.src = `/uploads/${image}`;
+                    imgElement.alt = image;
+                    galleryElement.appendChild(imgElement);
+                });
+            })
+            .catch(error => {
+                console.error('Error al cargar las imágenes:', error);
+            });
     </script>
 </body>
 </html>
