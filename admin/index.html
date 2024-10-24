@@ -16,10 +16,39 @@
             height: 100%;
             object-fit: cover;
         }
+        #login {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+            cursor: pointer;
+        }
     </style>
+    <!-- Cargar Netlify Identity Widget -->
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
-    <!-- Imagen o GIF que se mostrará -->
+    <div id="login">Iniciar sesión</div>
     <img src="/uploads/abogado.gif" alt="Mi GIF">
+
+    <script>
+        // Inicializar Netlify Identity
+        if (window.netlifyIdentity) {
+            window.netlifyIdentity.on('init', user => {
+                if (!user) {
+                    window.netlifyIdentity.on('login', () => {
+                        document.location.href = '/admin/';
+                    });
+                }
+            });
+        }
+
+        // Manejar el clic en el botón de inicio de sesión
+        document.getElementById('login').onclick = function() {
+            window.netlifyIdentity.open();
+        };
+    </script>
 </body>
 </html>
