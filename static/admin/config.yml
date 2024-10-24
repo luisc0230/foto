@@ -1,9 +1,9 @@
 backend:
   name: git-gateway
-  branch: main # La rama de GitHub que usas
+  branch: main  # Asegúrate de usar la rama principal de tu repositorio
 
-media_folder: "static/uploads" # Carpeta para subir imágenes
-public_folder: "/uploads" # Ruta pública para imágenes
+media_folder: "static/uploads"  # Carpeta para subir imágenes
+public_folder: "/uploads"       # Ruta pública para imágenes
 
 collections:
   - name: "images"
@@ -13,3 +13,12 @@ collections:
     fields:
       - { label: "File", name: "file", widget: "image" }
       - { label: "Description", name: "description", widget: "string" }
+
+  - name: "pages"
+    label: "Pages"
+    folder: "admin"
+    create: false  # Evita crear nuevas páginas desde el CMS
+    extension: "html"
+    format: "html"
+    fields:
+      - { label: "Content", name: "body", widget: "markdown" }
