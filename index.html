@@ -3,91 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galería de Videos</title>
+    <title>Galería de Imágenes</title>
     <style>
         body {
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            overflow: hidden;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            width: 100vw;
-            height: 100vh;
-            background-color: #000;
-            position: relative;
+            min-height: 100vh;
+            background-color: #f0f0f0;
         }
-        .fade-video {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            height: 100vh;
-            transform: translate(-50%, -50%);
+        h1 {
+            margin: 20px;
+        }
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+        .gallery img {
+            width: 200px;
+            height: 200px;
             object-fit: cover;
-            opacity: 0;
-            transition: opacity 1s ease-in-out;
-        }
-        .active {
-            opacity: 1;
-            z-index: 1;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
     </style>
 </head>
 <body>
-    <!-- Contenedor de videos -->
-    <div id="gallery"></div>
+    <h1>Galería de Imágenes</h1>
+    <div class="gallery" id="gallery"></div>
 
     <script>
-        // Nombres de archivos de video
-        const videoNames = ['video1.mp4', 'video2.mp4', 'video3.mp4']; // Ajusta los nombres de archivos según tus videos
+        // Nombres de archivos conocidos en la carpeta 'uploads'
+        const imageNames = ['1.gif', 'lockscreen-2.jpg', 'fondo.jpg']; // Agrega más nombres si los conoces
 
         const galleryElement = document.getElementById('gallery');
-        let currentIndex = 0;
-        const videos = [];
 
-        // Cargar videos y agregarlos al DOM si existen
-        videoNames.forEach(name => {
-            const videoElement = document.createElement('video');
-            videoElement.src = `static/uploads/${name}`;
-            videoElement.classList.add('fade-video');
-            videoElement.autoplay = false;
-            videoElement.loop = true;
-            videoElement.muted = true; // Desactivar sonido por defecto
-            videoElement.playsInline = true; // Para mejorar la compatibilidad en dispositivos móviles
+        // Intentar cargar imágenes desde '/uploads'
+        imageNames.forEach(name => {
+            const imgSrc = /static/uploads/${name};
+            console.log(Intentando cargar: ${imgSrc}); // Mostrar la ruta de la imagen en la consola
 
-            // Verificar si el video se carga correctamente
-            videoElement.onloadeddata = () => {
-                videos.push(videoElement);
-                if (videos.length === 1) {
-                    videoElement.classList.add('active');
-                    videoElement.play();
-                }
-                galleryElement.appendChild(videoElement);
+            const imgElement = document.createElement('img');
+            imgElement.src = imgSrc;
+            imgElement.alt = name;
+
+            // Verificar si la imagen se carga correctamente
+            imgElement.onload = () => {
+                console.log(Cargada exitosamente: ${imgSrc});
+            };
+            imgElement.onerror = () => {
+                console.warn(No se pudo cargar la imagen: ${imgSrc});
+                imgElement.remove(); // Eliminar la imagen si no se carga
             };
 
-            videoElement.onerror = () => {
-                console.warn(`No se pudo cargar el video: static/uploads/${name}`);
-            };
+            galleryElement.appendChild(imgElement);
         });
-
-        // Función para cambiar de video con efecto de fade
-        function changeVideo() {
-            if (videos.length > 0) {
-                // Ocultar el video actual y pausarlo
-                videos[currentIndex].classList.remove('active');
-                videos[currentIndex].pause();
-
-                // Calcular el siguiente índice
-                currentIndex = (currentIndex + 1) % videos.length;
-
-                // Mostrar el nuevo video y reproducirlo
-                videos[currentIndex].classList.add('active');
-                videos[currentIndex].play();
-            }
-        }
-
-        // Cambiar de video cada 10 segundos
-        setInterval(changeVideo, 10000);
     </script>
 </body>
 </html>
