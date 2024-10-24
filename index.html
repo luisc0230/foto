@@ -6,64 +6,68 @@
     <title>Galería de Imágenes</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            background-color: #f0f0f0;
+            background-color: #000;
+            overflow: hidden;
         }
-        h1 {
-            margin: 20px;
-        }
-        .gallery {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-        }
-        .gallery img {
-            width: 200px;
-            height: 200px;
+        .fade-img {
+            position: absolute;
+            width: 100%;
+            height: 100%;
             object-fit: cover;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+        .active {
+            opacity: 1;
+            z-index: 1;
         }
     </style>
 </head>
 <body>
-    <h1>GALAXI de Imágenes</h1>
-    <div class="gallery" id="gallery"></div>
+    <!-- Contenedor de imágenes -->
+    <div id="gallery"></div>
 
     <script>
-        // Nombres de archivo base y extensiones conocidas
-        const baseNames = Array.from({ length: 5 }, (_, i) => `imagen${i + 1}`);
-        const extensions = ['jpg'];
-
+        // Nombres de archivo base y extensión
+        const baseNames = Array.from({ length: 6 }, (_, i) => `imagen${i + 1}.jpg`);
         const galleryElement = document.getElementById('gallery');
+        let currentIndex = 0;
 
-        // Intentar cargar imágenes usando baseNames y extensiones comunes
-        baseNames.forEach(base => {
-            extensions.forEach(ext => {
-                const imgSrc = `static/uploads/${base}.${ext}`;
-                const imgElement = document.createElement('img');
-                
-                // Verificar si la imagen se carga correctamente
-                imgElement.onload = () => {
-                    console.log(`Cargada exitosamente: ${imgSrc}`);
-                    galleryElement.appendChild(imgElement);
-                };
-                imgElement.onerror = () => {
-                    console.warn(`No se pudo cargar la imagen: ${imgSrc}`);
-                };
-
-                imgElement.src = imgSrc;
-                imgElement.alt = base;
-            });
+        // Cargar imágenes y agregarlas al DOM
+        baseNames.forEach(name => {
+            const imgElement = document.createElement('img');
+            imgElement.src = `static/uploads/${name}`;
+            imgElement.classList.add('fade-img');
+            imgElement.alt = '';
+            galleryElement.appendChild(imgElement);
         });
+
+        // Obtener todas las imágenes cargadas
+        const images = document.querySelectorAll('.fade-img');
+
+        // Mostrar la primera imagen
+        if (images.length > 0) images[currentIndex].classList.add('active');
+
+        // Función para cambiar de imagen con efecto de fade
+        function changeImage() {
+            // Ocultar la imagen actual
+            images[currentIndex].classList.remove('active');
+
+            // Calcular el siguiente índice
+            currentIndex = (currentIndex + 1) % images.length;
+
+            // Mostrar la nueva imagen
+            images[currentIndex].classList.add('active');
+        }
+
+        // Cambiar de imagen cada 3 segundos
+        setInterval(changeImage, 3000);
     </script>
 </body>
 </html>
