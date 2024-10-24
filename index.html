@@ -39,14 +39,14 @@
     <div class="gallery" id="gallery"></div>
 
     <script>
-        // Nombres de archivos conocidos en la carpeta 'uploads'
+        // Nombres de archivos conocidos en la carpeta 'static/uploads'
         const imageNames = ['1.gif', 'lockscreen-2.jpg', 'fondo.jpg']; // Agrega más nombres si los conoces
 
         const galleryElement = document.getElementById('gallery');
 
-        // Intentar cargar imágenes desde '/uploads'
+        // Intentar cargar imágenes desde 'static/uploads'
         imageNames.forEach(name => {
-            const imgSrc = `/static/uploads/${name}`;
+            const imgSrc = `static/uploads/${name}`;
             console.log(`Intentando cargar: ${imgSrc}`); // Mostrar la ruta de la imagen en la consola
 
             const imgElement = document.createElement('img');
