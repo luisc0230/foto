@@ -35,37 +35,32 @@
     </style>
 </head>
 <body>
-    <h1>galeeee de Imágenes</h1>
+    <h1>Galería de Imágenes</h1>
     <div class="gallery" id="gallery"></div>
 
     <script>
-        // Cargar imágenes desde 'uploads.json'
+        // Extensiones de imágenes a probar
+        const extensions = ['jpg', 'jpeg', 'png', 'gif'];
+        // Lista de nombres de archivos de ejemplo
+        const imageNames = ['1', 'lockscreen-2', 'fondo']; // Agrega más nombres si los conoces
+
         const galleryElement = document.getElementById('gallery');
 
-        // Ruta del archivo JSON "maestro"
-        const jsonFilePath = '/uploads/uploads.json';
-
-        // Cargar imágenes desde el archivo JSON
-        fetch(jsonFilePath)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('No se pudo cargar el archivo JSON.');
-                }
-                return response.json();
-            })
-            .then(data => {
-                // Iterar sobre la lista de imágenes en el JSON y mostrarlas
-                data.images.forEach(image => {
+        // Intentar cargar imágenes con diferentes extensiones
+        imageNames.forEach(name => {
+            extensions.forEach(ext => {
+                const img = new Image();
+                img.src = `/uploads/${name}.${ext}`;
+                img.onload = () => {
                     const imgElement = document.createElement('img');
-                    imgElement.src = `/uploads/${image}`;
-                    imgElement.alt = 'Imagen';
+                    imgElement.src = img.src;
                     galleryElement.appendChild(imgElement);
-                });
-            })
-            .catch(error => {
-                console.error('Error al cargar las imágenes:', error);
-                galleryElement.innerHTML = '<p>No se pudieron cargar las imágenes.</p>';
+                };
+                img.onerror = () => {
+                    // No hacer nada si la imagen no se carga
+                };
             });
+        });
     </script>
 </body>
 </html>
