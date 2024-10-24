@@ -8,12 +8,13 @@
         body {
             margin: 0;
             padding: 0;
+            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
             background-color: #000;
-            overflow: hidden;
+            position: relative;
         }
         .fade-img {
             position: absolute;
@@ -34,36 +35,45 @@
     <div id="gallery"></div>
 
     <script>
-        // Nombres de archivo base y extensión
+        // Nombres de archivo base
         const baseNames = Array.from({ length: 6 }, (_, i) => `imagen${i + 1}.jpg`);
         const galleryElement = document.getElementById('gallery');
         let currentIndex = 0;
+        const images = [];
 
-        // Cargar imágenes y agregarlas al DOM
+        // Cargar imágenes y agregarlas al DOM si existen
         baseNames.forEach(name => {
             const imgElement = document.createElement('img');
             imgElement.src = `static/uploads/${name}`;
             imgElement.classList.add('fade-img');
             imgElement.alt = '';
-            galleryElement.appendChild(imgElement);
+
+            // Verificar si la imagen se carga correctamente
+            imgElement.onload = () => {
+                images.push(imgElement);
+                if (images.length === 1) {
+                    imgElement.classList.add('active');
+                }
+                galleryElement.appendChild(imgElement);
+            };
+
+            imgElement.onerror = () => {
+                console.warn(`No se pudo cargar la imagen: static/uploads/${name}`);
+            };
         });
-
-        // Obtener todas las imágenes cargadas
-        const images = document.querySelectorAll('.fade-img');
-
-        // Mostrar la primera imagen
-        if (images.length > 0) images[currentIndex].classList.add('active');
 
         // Función para cambiar de imagen con efecto de fade
         function changeImage() {
-            // Ocultar la imagen actual
-            images[currentIndex].classList.remove('active');
+            if (images.length > 0) {
+                // Ocultar la imagen actual
+                images[currentIndex].classList.remove('active');
 
-            // Calcular el siguiente índice
-            currentIndex = (currentIndex + 1) % images.length;
+                // Calcular el siguiente índice
+                currentIndex = (currentIndex + 1) % images.length;
 
-            // Mostrar la nueva imagen
-            images[currentIndex].classList.add('active');
+                // Mostrar la nueva imagen
+                images[currentIndex].classList.add('active');
+            }
         }
 
         // Cambiar de imagen cada 3 segundos
