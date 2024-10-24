@@ -39,32 +39,31 @@
     <div class="gallery" id="gallery"></div>
 
     <script>
-        // Ruta del archivo JSON que contiene la lista de imágenes
-        const jsonFilePath = '/uploads/uploads.json';
+        // Nombres de archivo base y extensiones conocidas
+        const baseNames = Array.from({ length: 20 }, (_, i) => `image${i + 1}`);
+        const extensions = ['jpg', 'jpeg', 'png', 'gif'];
 
         const galleryElement = document.getElementById('gallery');
 
-        // Cargar la lista de imágenes desde el archivo JSON
-        fetch(jsonFilePath)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('No se pudo cargar el archivo JSON.');
-                }
-                return response.json();
-            })
-            .then(data => {
-                // Iterar sobre la lista de imágenes en el JSON y mostrarlas
-                data.images.forEach(image => {
-                    const imgElement = document.createElement('img');
-                    imgElement.src = `/static/uploads/${image.file}`;
-                    imgElement.alt = image.file;
+        // Intentar cargar imágenes usando baseNames y extensiones comunes
+        baseNames.forEach(base => {
+            extensions.forEach(ext => {
+                const imgSrc = `static/uploads/${base}.${ext}`;
+                const imgElement = document.createElement('img');
+                
+                // Verificar si la imagen se carga correctamente
+                imgElement.onload = () => {
+                    console.log(`Cargada exitosamente: ${imgSrc}`);
                     galleryElement.appendChild(imgElement);
-                });
-            })
-            .catch(error => {
-                console.error('Error al cargar las imágenes:', error);
-                galleryElement.innerHTML = '<p>No se pudieron cargar las imágenes.</p>';
+                };
+                imgElement.onerror = () => {
+                    console.warn(`No se pudo cargar la imagen: ${imgSrc}`);
+                };
+
+                imgElement.src = imgSrc;
+                imgElement.alt = base;
             });
+        });
     </script>
 </body>
 </html>
