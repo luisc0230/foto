@@ -39,27 +39,30 @@
     <div class="gallery" id="gallery"></div>
 
     <script>
-        // Extensiones de imágenes a probar
-        const extensions = ['jpg', 'jpeg', 'png', 'gif'];
-        // Lista de nombres de archivos de ejemplo
-        const imageNames = ['', '', '']; // Agrega más nombres si los conoces
+        // Nombres de archivos conocidos en la carpeta 'uploads'
+        const imageNames = ['1.gif', 'lockscreen-2.jpg', 'fondo.jpg']; // Agrega más nombres si los conoces
 
         const galleryElement = document.getElementById('gallery');
 
-        // Intentar cargar imágenes con diferentes extensiones
+        // Intentar cargar imágenes desde '/uploads'
         imageNames.forEach(name => {
-            extensions.forEach(ext => {
-                const img = new Image();
-                img.src = `/uploads/${name}.${ext}`;
-                img.onload = () => {
-                    const imgElement = document.createElement('img');
-                    imgElement.src = img.src;
-                    galleryElement.appendChild(imgElement);
-                };
-                img.onerror = () => {
-                    // No hacer nada si la imagen no se carga
-                };
-            });
+            const imgSrc = `/uploads/${name}`;
+            console.log(`Intentando cargar: ${imgSrc}`); // Mostrar la ruta de la imagen en la consola
+
+            const imgElement = document.createElement('img');
+            imgElement.src = imgSrc;
+            imgElement.alt = name;
+
+            // Verificar si la imagen se carga correctamente
+            imgElement.onload = () => {
+                console.log(`Cargada exitosamente: ${imgSrc}`);
+            };
+            imgElement.onerror = () => {
+                console.warn(`No se pudo cargar la imagen: ${imgSrc}`);
+                imgElement.remove(); // Eliminar la imagen si no se carga
+            };
+
+            galleryElement.appendChild(imgElement);
         });
     </script>
 </body>
