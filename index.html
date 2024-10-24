@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galería de Imágenes</title>
+    <title>Galería de Videos</title>
     <style>
         body {
             margin: 0;
             padding: 0;
             overflow: hidden;
-            position: relative;
-            width: 100vw;
-            height: 100vh;
-            background-color: #000;
             display: flex;
             align-items: center;
             justify-content: center;
+            width: 100vw;
+            height: 100vh;
+            background-color: #000;
+            position: relative;
         }
-        .fade-img {
+        .fade-video {
             position: absolute;
             top: 50%;
             left: 50%;
@@ -34,53 +34,60 @@
     </style>
 </head>
 <body>
-    <!-- Contenedor de imágenes -->
+    <!-- Contenedor de videos -->
     <div id="gallery"></div>
 
     <script>
-        // Nombres de archivo base
-        const baseNames = Array.from({ length: 6 }, (_, i) => `imagen${i + 1}.jpg`);
+        // Nombres de archivos de video
+        const videoNames = ['video1.mp4', 'video2.mp4', 'video3.mp4']; // Ajusta los nombres de archivos según tus videos
+
         const galleryElement = document.getElementById('gallery');
         let currentIndex = 0;
-        const images = [];
+        const videos = [];
 
-        // Cargar imágenes y agregarlas al DOM si existen
-        baseNames.forEach(name => {
-            const imgElement = document.createElement('img');
-            imgElement.src = `static/uploads/${name}`;
-            imgElement.classList.add('fade-img');
-            imgElement.alt = '';
+        // Cargar videos y agregarlos al DOM si existen
+        videoNames.forEach(name => {
+            const videoElement = document.createElement('video');
+            videoElement.src = `static/uploads/${name}`;
+            videoElement.classList.add('fade-video');
+            videoElement.autoplay = false;
+            videoElement.loop = true;
+            videoElement.muted = true; // Desactivar sonido por defecto
+            videoElement.playsInline = true; // Para mejorar la compatibilidad en dispositivos móviles
 
-            // Verificar si la imagen se carga correctamente
-            imgElement.onload = () => {
-                images.push(imgElement);
-                if (images.length === 1) {
-                    imgElement.classList.add('active');
+            // Verificar si el video se carga correctamente
+            videoElement.onloadeddata = () => {
+                videos.push(videoElement);
+                if (videos.length === 1) {
+                    videoElement.classList.add('active');
+                    videoElement.play();
                 }
-                galleryElement.appendChild(imgElement);
+                galleryElement.appendChild(videoElement);
             };
 
-            imgElement.onerror = () => {
-                console.warn(`No se pudo cargar la imagen: static/uploads/${name}`);
+            videoElement.onerror = () => {
+                console.warn(`No se pudo cargar el video: static/uploads/${name}`);
             };
         });
 
-        // Función para cambiar de imagen con efecto de fade
-        function changeImage() {
-            if (images.length > 0) {
-                // Ocultar la imagen actual
-                images[currentIndex].classList.remove('active');
+        // Función para cambiar de video con efecto de fade
+        function changeVideo() {
+            if (videos.length > 0) {
+                // Ocultar el video actual y pausarlo
+                videos[currentIndex].classList.remove('active');
+                videos[currentIndex].pause();
 
                 // Calcular el siguiente índice
-                currentIndex = (currentIndex + 1) % images.length;
+                currentIndex = (currentIndex + 1) % videos.length;
 
-                // Mostrar la nueva imagen
-                images[currentIndex].classList.add('active');
+                // Mostrar el nuevo video y reproducirlo
+                videos[currentIndex].classList.add('active');
+                videos[currentIndex].play();
             }
         }
 
-        // Cambiar de imagen cada 3 segundos
-        setInterval(changeImage, 3000);
+        // Cambiar de video cada 10 segundos
+        setInterval(changeVideo, 10000);
     </script>
 </body>
 </html>
