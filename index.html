@@ -35,62 +35,37 @@
     </style>
 </head>
 <body>
-    <h1>Galeeee</h1>
+    <h1>Galería de Imágenes</h1>
     <div class="gallery" id="gallery"></div>
 
     <script>
-        // Cargar imágenes del archivo JSON más reciente en la carpeta 'uploads'
+        // Cargar imágenes desde 'uploads.json'
         const galleryElement = document.getElementById('gallery');
 
-        // Función para obtener el nombre del archivo JSON más reciente
-        async function getLatestJSON() {
-            // Se usa un endpoint estático como ejemplo
-            const response = await fetch('/uploads/');
-            
-            if (!response.ok) {
-                throw new Error('No se pudo obtener la lista de archivos.');
-            }
+        // Ruta del archivo JSON "maestro"
+        const jsonFilePath = '/uploads/uploads.json';
 
-            const text = await response.text();
-
-            // Usar un parser básico para encontrar el nombre del archivo JSON
-            const jsonFiles = [...text.matchAll(/href="([^"]+\.json)"/g)].map(match => match[1]);
-
-            if (jsonFiles.length === 0) {
-                throw new Error('No se encontraron archivos JSON.');
-            }
-
-            // Devolver el último archivo JSON (puedes ajustar la lógica para seleccionar el más reciente)
-            return jsonFiles[jsonFiles.length - 1];
-        }
-
-        // Función para cargar las imágenes desde el archivo JSON
-        async function loadImages() {
-            try {
-                const jsonFile = await getLatestJSON();
-                const response = await fetch(`/uploads/${jsonFile}`);
-                
+        // Cargar imágenes desde el archivo JSON
+        fetch(jsonFilePath)
+            .then(response => {
                 if (!response.ok) {
                     throw new Error('No se pudo cargar el archivo JSON.');
                 }
-
-                const data = await response.json();
-
+                return response.json();
+            })
+            .then(data => {
                 // Iterar sobre la lista de imágenes en el JSON y mostrarlas
                 data.images.forEach(image => {
                     const imgElement = document.createElement('img');
-                    imgElement.src = `/uploads/${image.file}`;
-                    imgElement.alt = image.description || 'Imagen';
+                    imgElement.src = `/uploads/${image}`;
+                    imgElement.alt = 'Imagen';
                     galleryElement.appendChild(imgElement);
                 });
-            } catch (error) {
+            })
+            .catch(error => {
                 console.error('Error al cargar las imágenes:', error);
                 galleryElement.innerHTML = '<p>No se pudieron cargar las imágenes.</p>';
-            }
-        }
-
-        // Cargar imágenes al iniciar
-        loadImages();
+            });
     </script>
 </body>
 </html>
